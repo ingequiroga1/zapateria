@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {applyDemoSale} from '../src/domain.js';
+const state=()=>({products:[{id:'p1',kind:'Monedero',name:'Sara',size:'Grande',color:'Rojo',stock:6,price:149,cost:85},{id:'p2',name:'Andrea',stock:2,price:100}],entries:[],suppliers:[]});
+const sale=()=>({id:'s1',sale_date:'2026-10-20',payment_method:'Efectivo',items:[{product_id:'p1',quantity:2,price:149}]});
+test('sale subtracts stock and preserves entry history',()=>{const s=state(),r=applyDemoSale(s,sale());assert.equal(r.state.products[0].stock,4);assert.equal(r.sale.total,298);assert.equal(s.products[0].stock,6);assert.deepEqual(r.state.entries,s.entries)});
+test('repeated confirmation does not subtract twice',()=>{const r=applyDemoSale(state(),sale());const retry=applyDemoSale(r.state,sale());assert.equal(retry.state.products[0].stock,4);assert.equal(retry.state.sales.length,1)});
+test('insufficient second item leaves entire state unchanged',()=>{const s=state(),v=sale();v.items.push({product_id:'p2',quantity:3,price:100});assert.throws(()=>applyDemoSale(s,v),/insuficientes/);assert.equal(s.products[0].stock,6);assert.equal(s.sales,undefined)});
+test('duplicate rows cannot bypass stock validation',()=>{const v=sale();v.items=[{product_id:'p1',quantity:4,price:149},{product_id:'p1',quantity:4,price:149}];assert.throws(()=>applyDemoSale(state(),v),/insuficientes/)});
+test('reject invalid quantity, price, product and payment',()=>{for(const patch of [{quantity:0},{quantity:1.2},{price:-1},{price:''},{product_id:'other'}]){const v=sale();Object.assign(v.items[0],patch);assert.throws(()=>applyDemoSale(state(),v))}const v=sale();v.payment_method='invalid';assert.throws(()=>applyDemoSale(state(),v))});
+test('sell last piece and preserve historical price after catalog edit',()=>{const v=sale();v.items[0].quantity=6;const r=applyDemoSale(state(),v);assert.equal(r.state.products[0].stock,0);r.state.products[0].price=200;assert.equal(r.sale.items[0].price,149)});
