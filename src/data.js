@@ -1,7 +1,9 @@
 import {createClient} from '@supabase/supabase-js';
 import {applyDemoSale,applyDemoEntry,migrateDemoSuppliers,saveDemoProduct} from './domain';
 const CONFIG_KEY='piel.connection.v1', DEMO_KEY='piel.demo.v1';
-export function getConfig(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY))||{url:import.meta.env.VITE_SUPABASE_URL||'',key:import.meta.env.VITE_SUPABASE_ANON_KEY||''}}catch{return {url:'',key:''}}}
+export function getConfig() {
+  return readConnectionConfig(import.meta.env);
+}
 export function saveConfig(c){localStorage.setItem(CONFIG_KEY,JSON.stringify(c))}
 export function makeClient(c){return c.url&&c.key?createClient(c.url,c.key):null}
 export const initialDemo=()=>({suppliers:[{id:'demo-supplier',name:'Pieles del Bajío'}],products:[],entries:[]});
