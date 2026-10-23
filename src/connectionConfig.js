@@ -1,4 +1,3 @@
-const demo = env.VITE_DEMO_MODE === 'true';
 export function readConnectionConfig(env) {
   const url = (env.VITE_SUPABASE_URL || '').trim();
 
