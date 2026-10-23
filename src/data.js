@@ -1,5 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 import {applyDemoSale,applyDemoEntry,migrateDemoSuppliers,saveDemoProduct} from './domain';
+import {readConnectionConfig} from './connectionConfig.js';
 const CONFIG_KEY='piel.connection.v1', DEMO_KEY='piel.demo.v1';
 export function getConfig() {
   return readConnectionConfig(import.meta.env);
