@@ -1,0 +1,41 @@
+# Dependencias
+node_modules/
+
+# Compilacion y cobertura
+dist/
+dist-ssr/
+coverage/
+*.tsbuildinfo
+
+# Variables de entorno y credenciales locales
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache y herramientas de despliegue
+.vite/
+.netlify/
+.sites-checkout/
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.vs/
+*.suo
+*.user
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Paquete descargable generado: regenerar si se necesita publicar
+/public/proyecto-react-supabase.zip
